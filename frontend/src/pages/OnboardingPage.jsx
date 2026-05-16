@@ -1,7 +1,5 @@
-import React from "react";
-
-const OnBoardingPage = () => {
+const OnboardingPage = () => {
   return <div>onboardingpage</div>;
 };
 
-export default OnBoardingPage;
+export default OnboardingPage;
