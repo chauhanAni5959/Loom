@@ -1,4 +1,5 @@
 import jwt, { decode } from "jsonwebtoken";
+import { normalizeUserProfilePic } from "../lib/avatar.js";
 import User from "../models/User.js";
 
 export const protectRoute = async (req, res, next) => {
@@ -23,6 +24,7 @@ export const protectRoute = async (req, res, next) => {
     if (!user) {
       return res.status(401).json({ message: "Unauthorized - User not found" });
     }
+    normalizeUserProfilePic(user);
     req.user = user;
     next();
   } catch (error) {

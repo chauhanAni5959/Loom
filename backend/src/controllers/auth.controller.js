@@ -1,4 +1,9 @@
 import { upsertStreamUser } from "../lib/stream.js";
+import {
+  buildRandomAvatarUrl,
+  normalizeProfilePic,
+  normalizeUserProfilePic,
+} from "../lib/avatar.js";
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 import bcrypt from  'bcryptjs'
@@ -31,7 +36,7 @@ export async function signup(req, res) {
     }
 
     const idx = Math.floor(Math.random() * 100) + 1; // generate a num between 1-100
-    const randomAvatar = `https://avatar.iran.liara.run/public/${idx}.png`;
+    const randomAvatar = buildRandomAvatarUrl(idx);
 
     const newUser = await User.create({
       email,
@@ -65,6 +70,8 @@ export async function signup(req, res) {
       sameSite: "strict", // prevent CSRF attacks
       secure: process.env.NODE_ENV === "production",
     });
+
+    normalizeUserProfilePic(newUser);
 
     res.status(201).json({ success: true, user: newUser });
   } catch (error) {
@@ -103,6 +110,8 @@ export async function login(req, res) {
       sameSite: "strict", // prevent CSRF attacks
       secure: process.env.NODE_ENV === "production",
     });
+
+    normalizeUserProfilePic(user);
 
     res.status(200).json({ success: true, user });
   } catch (error) {
@@ -146,6 +155,7 @@ export async function onboard(req, res) {
       userId,
       {
         ...req.body,
+        profilePic: normalizeProfilePic(req.body.profilePic),
         isOnboarded: true,
       },
       { new: true },
@@ -169,6 +179,8 @@ export async function onboard(req, res) {
         streamError.message,
       );
     }
+
+    normalizeUserProfilePic(updatedUser);
 
     res.status(200).json({ success: true, user: updatedUser });
   } catch (error) {

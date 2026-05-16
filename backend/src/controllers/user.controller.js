@@ -1,4 +1,8 @@
 import FriendRequest from "../models/FriendRequest.js";
+import {
+  normalizeUserProfilePic,
+  normalizeUsersProfilePics,
+} from "../lib/avatar.js";
 import User from "../models/User.js";
 
 export async function getRecommendedUsers(req, res) {
@@ -9,10 +13,13 @@ export async function getRecommendedUsers(req, res) {
     const recommendedUsers = await User.find({
       $and: [
         { _id: { $ne: currentUserId } }, //exclude currentUser
-        { $id: { $nin: currentUser.friends } }, //exculde current user's friends
+        { _id: { $nin: currentUser.friends } }, //exclude current user's friends
         { isOnboarded: true },
       ],
     });
+
+    normalizeUsersProfilePics(recommendedUsers);
+
     res.status(200).json(recommendedUsers);
   } catch (error) {
     console.log("Error in getRecommendedUsers controller", error.message);
@@ -28,6 +35,9 @@ export async function getMyFriends(req, res) {
         "friends",
         "fullName profilePic nativeLanguage learningLanguage",
       );
+
+    normalizeUsersProfilePics(user.friends);
+
     res.status(200).json(user.friends);
   } catch (error) {
     console.log("Error in getMyFriends in user controller", error.message);
@@ -60,7 +70,7 @@ export async function sendFriendRequest(req, res) {
 
     const existingRequest = await FriendRequest.findOne({
       $or: [
-        { sender: myId, recipien: recipientId },
+        { sender: myId, recipient: recipientId },
         { sender: recipientId, recipient: myId },
       ],
     });
@@ -134,6 +144,11 @@ export async function getFriendRequests(req, res) {
       status: "accepted",
     }).populate("recipient", "fullName profilePic");
 
+    incomingReqs.forEach((request) => normalizeUserProfilePic(request.sender));
+    acceptedReqs.forEach((request) =>
+      normalizeUserProfilePic(request.recipient),
+    );
+
     res.status(200).json({ incomingReqs, acceptedReqs });
   } catch (error) {
     console.log("Error in getPendingFriendRequests controller", error.message);
@@ -149,6 +164,10 @@ export async function getOutgoingFriendReqs(req, res) {
     }).populate(
       "recipient",
       "fullName profilePic nativeLanguage learningLanguage",
+    );
+
+    outgoingRequests.forEach((request) =>
+      normalizeUserProfilePic(request.recipient),
     );
 
     res.status(200).json(outgoingRequests);

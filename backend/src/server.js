@@ -22,6 +22,7 @@ app.use(cookieParser());
 // Routes
 app.use("/api/auth", authRoutes);
 // ->userRoutes
+app.use("/api/users", userRoutes);
 app.use("/api/user", userRoutes);
 // ->chatRoutes
 app.use("/api/chat", chatRoutes);
