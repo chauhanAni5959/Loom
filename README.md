@@ -1,5 +1,4 @@
-deployed link - https://loom-a-language-learning-community.onrender.com/login
-Based on the codebase you provided, here is a comprehensive summary of your **Loom** application.
+Deployed link - https://loom-a-language-learning-community.onrender.com/login
 
 🚀 Application Overview
 
@@ -45,4 +44,4 @@ The project follows a clean **Monorepo** structure separated into two main direc
 1. **`/backend`**: Follows an MVC (Model-View-Controller) architecture. It exposes RESTful APIs through organized routes (`auth.route.js`, `chat.route.js`, `user.routes.js`), processes business logic in controllers, and interacts with MongoDB via models. It also includes middleware for protecting authenticated routes.
 2. **`/frontend`**: A component-driven React application. It separates concerns neatly into `pages` (e.g., HomePage, ChatPage, CallPage), reusable UI `components` (e.g., Navbar, Sidebar, FriendCard), custom `hooks` for business logic (e.g., `useAuthUser`, `useLogin`), and state management stores.
 
-*This is a highly scalable, well-structured MERN stack application that beautifully integrates third-party communication APIs! Let me know if you need a summary tailored specifically for a resume or a GitHub `README.md` file.*
+
