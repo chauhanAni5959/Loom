@@ -29,6 +29,7 @@ app.use("/api/user", userRoutes);
 // ->chatRoutes
 app.use("/api/chat", chatRoutes);
 
+// for deploying 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
